@@ -2,9 +2,12 @@ name: 'Travis Reynolds'
 description: 'An action to automatically deploy a JammeryHQ starter.'
 author: 'JammeryHQ'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  connection-string:
+    description: 'Azure Container Connection String'
+    default: ''
+  container-name:
+    description: 'Azure Container Name'
+    default: ''
 runs:
   using: 'node12'
   main: 'dist/index.js'
