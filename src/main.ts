@@ -12,7 +12,7 @@ async function run (): Promise<void> {
 
   try {
     console.log(AZURE_STORAGE_CONTAINER_NAME)
-    const files = await read('.', ['*'])
+    const files = await read('.')
     console.log(files)
 
     core.setOutput('time', new Date().toTimeString())
