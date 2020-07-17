@@ -441,7 +441,7 @@ function run() {
         // const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME)
         // const blockBlobClient = containerClient.getBlockBlobClient('some')
         try {
-            core.debug(AZURE_STORAGE_CONTAINER_NAME);
+            core.debug(process.env.AZURE_STORAGE_CONTAINER_NAME);
             const files = yield readdir_1.read('.', ['*']);
             core.debug(JSON.stringify(files));
             core.debug(new Date().toTimeString());
