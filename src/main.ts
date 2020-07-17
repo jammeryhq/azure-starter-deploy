@@ -1,23 +1,13 @@
 import * as core from '@actions/core'
-// import { BlobServiceClient } from '@azure/storage-blob'
-// import fs from 'fs/promises'
-import { read } from 'readdir'
-
-// const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING as string
-// const AZURE_STORAGE_CONTAINER_NAME = process.env.AZURE_STORAGE_CONTAINER_STARTERS as string
+import { wait } from './wait'
 
 async function run (): Promise<void> {
-  // const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING)
-  // const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME)
-  // const blockBlobClient = containerClient.getBlockBlobClient('some')
-
   try {
-    core.debug(core.getInput('connection-string'))
-    core.debug(core.getInput('container-name'))
-    const files = await read('.', ['*'])
-    core.debug(JSON.stringify(files))
+    const ms: string = core.getInput('milliseconds')
+    core.debug(`Waiting ${ms} milliseconds ...`)
 
     core.debug(new Date().toTimeString())
+    await wait(parseInt(ms, 10))
     core.debug(new Date().toTimeString())
 
     core.setOutput('time', new Date().toTimeString())
