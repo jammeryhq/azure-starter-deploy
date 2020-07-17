@@ -97,6 +97,8 @@ function run() {
         try {
             const ms = core.getInput('milliseconds');
             core.debug(`Waiting ${ms} milliseconds ...`);
+            const connectionString = core.getInput('connection-string');
+            core.debug(`Connection String: ${connectionString}`);
             core.debug(new Date().toTimeString());
             yield wait_1.wait(parseInt(ms, 10));
             core.debug(new Date().toTimeString());
