@@ -25741,23 +25741,45 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const storage_blob_1 = __webpack_require__(9);
-// import fs from 'fs/promises'
+const fs_1 = __importDefault(__webpack_require__(747));
 const readdir_1 = __webpack_require__(633);
 function run() {
+    var e_1, _a;
     return __awaiter(this, void 0, void 0, function* () {
         const AZURE_STORAGE_CONNECTION_STRING = core.getInput('connection-string');
         const AZURE_STORAGE_CONTAINER_NAME = core.getInput('container-name');
         const blobServiceClient = storage_blob_1.BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
         const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME);
-        const blockBlobClient = containerClient.getBlockBlobClient('some');
         try {
-            console.log(AZURE_STORAGE_CONTAINER_NAME);
-            const files = yield readdir_1.read('.', ['*']);
-            console.log(files);
-            core.setOutput('time', new Date().toTimeString());
+            const files = yield readdir_1.read('.');
+            try {
+                for (var files_1 = __asyncValues(files), files_1_1; files_1_1 = yield files_1.next(), !files_1_1.done;) {
+                    const path = files_1_1.value;
+                    const uploadPath = `/shopify/${path}`;
+                    const blockBlobClient = containerClient.getBlockBlobClient(uploadPath);
+                    yield blockBlobClient.uploadStream(fs_1.default.createReadStream(path));
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (files_1_1 && !files_1_1.done && (_a = files_1.return)) yield _a.call(files_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
         }
         catch (error) {
             core.setFailed(error.message);
