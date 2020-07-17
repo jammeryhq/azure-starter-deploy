@@ -6,7 +6,7 @@ async function run (): Promise<void> {
     const ms: string = core.getInput('milliseconds')
     core.debug(`Waiting ${ms} milliseconds ...`)
     const connectionString = core.getInput('connection-string')
-    core.debug(`Connection String: ${connectionString}`)
+    console.log(`Connection String: ${connectionString}`)
 
     core.debug(new Date().toTimeString())
     await wait(parseInt(ms, 10))
