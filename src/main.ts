@@ -12,7 +12,7 @@ async function run (): Promise<void> {
   // const blockBlobClient = containerClient.getBlockBlobClient('some')
 
   try {
-    core.debug(AZURE_STORAGE_CONTAINER_NAME)
+    core.debug(process.env.AZURE_STORAGE_CONTAINER_NAME as string)
     const files = await read('.', ['*'])
     core.debug(JSON.stringify(files))
 
