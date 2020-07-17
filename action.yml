@@ -8,6 +8,9 @@ inputs:
   container-name:
     description: 'Azure Container Name'
     default: ''
+  milliseconds:
+    description: 'milliseconds to wait'
+    default: '2000'
 runs:
   using: 'node12'
   main: 'dist/index.js'
