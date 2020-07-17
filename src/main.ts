@@ -7,9 +7,9 @@ const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STR
 const AZURE_STORAGE_CONTAINER_NAME = process.env.AZURE_STORAGE_CONTAINER_STARTERS as string
 
 async function run (): Promise<void> {
-  const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING)
-  const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME)
-  const blockBlobClient = containerClient.getBlockBlobClient('some')
+  // const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING)
+  // const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME)
+  // const blockBlobClient = containerClient.getBlockBlobClient('some')
 
   try {
     core.debug(AZURE_STORAGE_CONTAINER_NAME)
