@@ -25745,14 +25745,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const storage_blob_1 = __webpack_require__(9);
 const readdir_1 = __webpack_require__(633);
+const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
+const AZURE_STORAGE_CONTAINER_NAME = process.env.AZURE_STORAGE_CONTAINER_STARTERS;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const AZURE_STORAGE_CONNECTION_STRING = core.getInput('connection-string');
-        const AZURE_STORAGE_CONTAINER_NAME = core.getInput('container-name');
         const blobServiceClient = storage_blob_1.BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
         const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME);
+        const blockBlobClient = containerClient.getBlockBlobClient('some');
         try {
-            console.log(AZURE_STORAGE_CONNECTION_STRING, AZURE_STORAGE_CONTAINER_NAME);
+            core.debug(AZURE_STORAGE_CONTAINER_NAME);
             const files = yield readdir_1.read('.', ['*']);
             core.debug(JSON.stringify(files));
             core.debug(new Date().toTimeString());
