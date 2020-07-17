@@ -1,10 +1,10 @@
 import * as core from '@actions/core'
-import { BlobServiceClient } from '@azure/storage-blob'
-import fs from 'fs/promises'
+// import { BlobServiceClient } from '@azure/storage-blob'
+// import fs from 'fs/promises'
 import { read } from 'readdir'
 
-const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING as string
-const AZURE_STORAGE_CONTAINER_NAME = process.env.AZURE_STORAGE_CONTAINER_STARTERS as string
+// const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING as string
+// const AZURE_STORAGE_CONTAINER_NAME = process.env.AZURE_STORAGE_CONTAINER_STARTERS as string
 
 async function run (): Promise<void> {
   // const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING)
