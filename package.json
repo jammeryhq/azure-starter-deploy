@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
+  "name": "jammeryhq-starter-deploy",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "GitHub action to deploy a JammeryHQ starter.",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -14,7 +14,10 @@
     "type": "git",
     "url": "git+https://github.com/actions/typescript-action.git"
   },
-  "author": "YourNameOrOrganization",
+  "author": {
+    "name": "Travis Reynolds",
+    "email": "travis@jammeryhq.com"
+  },
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.4"
@@ -22,7 +25,7 @@
   "devDependencies": {
     "@types/node": "^14.0.23",
     "@zeit/ncc": "^0.22.3",
-    "eslint-config-jammeryhq-node-ts": "^1.0.3",
+    "eslint-config-jammeryhq-node-ts": "^1.0.5",
     "typescript": "^3.9.7"
   }
 }
