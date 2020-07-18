@@ -25766,6 +25766,9 @@ function run() {
         try {
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { name, version } = JSON.parse(fs_1.default.readFileSync('package.json', 'utf8'));
+            // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+            if (!name || !version)
+                throw new Error('Missing either name or version.');
             const files = yield readdir_1.read('.');
             const uploadPath = (path) => `${name}/${version}/${path}`;
             try {
