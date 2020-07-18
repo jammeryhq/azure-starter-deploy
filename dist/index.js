@@ -25765,7 +25765,7 @@ function run() {
         const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME);
         try {
             // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const { name, version } = __webpack_require__(809);
+            const { name, version } = __webpack_require__(395);
             const files = yield readdir_1.read('.');
             const uploadPath = (path) => `${name}/${version}/${path}`;
             try {
@@ -27734,6 +27734,14 @@ function bytesToUuid(buf, offset_) {
 
 var _default = bytesToUuid;
 exports.default = _default;
+
+/***/ }),
+
+/***/ 395:
+/***/ (function(module) {
+
+module.exports = eval("require")("./package.json");
+
 
 /***/ }),
 
@@ -39075,14 +39083,6 @@ function md5(bytes) {
 
 var _default = md5;
 exports.default = _default;
-
-/***/ }),
-
-/***/ 809:
-/***/ (function(module) {
-
-module.exports = eval("require")("package.json");
-
 
 /***/ }),
 
