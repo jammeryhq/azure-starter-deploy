@@ -25764,12 +25764,14 @@ function run() {
         const blobServiceClient = storage_blob_1.BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
         const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME);
         try {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const { name, version } = __webpack_require__(809);
             const files = yield readdir_1.read('.');
+            const uploadPath = (path) => `${name}/${version}/${path}`;
             try {
                 for (var files_1 = __asyncValues(files), files_1_1; files_1_1 = yield files_1.next(), !files_1_1.done;) {
                     const path = files_1_1.value;
-                    const uploadPath = `/shopify/${path}`;
-                    const blockBlobClient = containerClient.getBlockBlobClient(uploadPath);
+                    const blockBlobClient = containerClient.getBlockBlobClient(uploadPath(path));
                     yield blockBlobClient.uploadStream(fs_1.default.createReadStream(path));
                 }
             }
@@ -39073,6 +39075,14 @@ function md5(bytes) {
 
 var _default = md5;
 exports.default = _default;
+
+/***/ }),
+
+/***/ 809:
+/***/ (function(module) {
+
+module.exports = eval("require")("package.json");
+
 
 /***/ }),
 
