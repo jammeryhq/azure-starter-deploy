@@ -12,7 +12,7 @@ async function run (): Promise<void> {
 
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { name, version }: { name: string, version: string } = require('./package.json')
+    const { name, version }: { name: string, version: string } = JSON.parse(fs.readFileSync('package.json', 'utf8'))
     const files = await read('.')
 
     const uploadPath = (path: string): string => `${name}/${version}/${path}`
