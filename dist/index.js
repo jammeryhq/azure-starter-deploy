@@ -25764,9 +25764,7 @@ function run() {
         const blobServiceClient = storage_blob_1.BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
         const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME);
         try {
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { name, version } = JSON.parse(fs_1.default.readFileSync('package.json', 'utf8'));
-            // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
             if (!name || !version)
                 throw new Error('Missing either name or version.');
             const files = yield readdir_1.read('.');
@@ -25785,6 +25783,7 @@ function run() {
                 }
                 finally { if (e_1) throw e_1.error; }
             }
+            // Now update Hasura to set the latest versions
         }
         catch (error) {
             core.setFailed(error.message);
