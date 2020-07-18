@@ -13,6 +13,9 @@ async function run (): Promise<void> {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { name, version }: { name: string, version: string } = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    if (!name || !version) throw new Error('Missing either name or version.')
+
     const files = await read('.')
 
     const uploadPath = (path: string): string => `${name}/${version}/${path}`
