@@ -11,10 +11,11 @@ async function run (): Promise<void> {
   const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME)
 
   try {
-    const { name, version } = require('package.json')
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { name, version }: { name: string, version: string } = require('package.json')
     const files = await read('.')
 
-    const uploadPath = path => `${name}/${version}/${path}`
+    const uploadPath = (path: string): string => `${name}/${version}/${path}`
 
     for await (const path of files) {
       const blockBlobClient = containerClient.getBlockBlobClient(uploadPath(path))
