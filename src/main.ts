@@ -15,7 +15,7 @@ async function run (): Promise<void> {
 
   const graphql = got.extend({
     prefixUrl: GRAPHQL_API_ENDPOINT,
-    headers: { Authorization: `Bearer ${GRAPHQL_API_SECRET}` },
+    headers: { 'x-hasura-admin-secret': GRAPHQL_API_SECRET },
     resolveBodyOnly: true,
     responseType: 'json'
   })

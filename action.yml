@@ -8,9 +8,12 @@ inputs:
   container-name:
     description: 'Azure Container Name'
     default: ''
-  milliseconds:
-    description: 'milliseconds to wait'
-    default: '2000'
+  graphql-endpoint:
+    description: 'Hasura API Endpoint'
+    default: ''
+  graphql-secret:
+    description: 'Hasura Secret'
+    default: ''
 runs:
   using: 'node12'
   main: 'dist/index.js'
