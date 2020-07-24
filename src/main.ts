@@ -1,14 +1,24 @@
 import * as core from '@actions/core'
-import { BlobServiceClient } from '@azure/storage-blob'
 import fs from 'fs'
+import got from 'got'
+import { BlobServiceClient } from '@azure/storage-blob'
 import { read } from 'readdir'
 
 async function run (): Promise<void> {
   const AZURE_STORAGE_CONNECTION_STRING = core.getInput('connection-string')
   const AZURE_STORAGE_CONTAINER_NAME = core.getInput('container-name')
+  const GRAPHQL_API_ENDPOINT = core.getInput('graphql-endpoint')
+  const GRAPHQL_API_SECRET = core.getInput('graphql-secret')
 
   const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING)
   const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME)
+
+  const graphql = got.extend({
+    prefixUrl: GRAPHQL_API_ENDPOINT,
+    headers: { Authorization: `Bearer ${GRAPHQL_API_SECRET}` },
+    resolveBodyOnly: true,
+    responseType: 'json'
+  })
 
   try {
     const { name, version }: { name: string, version: string } = JSON.parse(fs.readFileSync('package.json', 'utf8'))
@@ -24,6 +34,13 @@ async function run (): Promise<void> {
     }
 
     // Now update Hasura to set the latest versions
+    const query = `mutation InsertStartersVersions ($payload: starters_versions_insert_input!) {
+      insertStartersVersion (object: $payload) {
+        id
+      }
+    }`
+    const variables = { payload: { name, version } }
+    await graphql.post('v1/graphql', { json: { query, variables } })
   } catch (error) {
     core.setFailed(error.message)
   }
