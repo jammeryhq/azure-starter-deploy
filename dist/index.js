@@ -4007,7 +4007,7 @@ function run() {
             }
             // Now update Hasura to set the latest versions
             const query = `mutation InsertStartersVersions ($payload: starters_versions_insert_input!) {
-      insertStartersVersion (object: $payload) {
+      insertStartersVersion (object: $payload, on_conflict: { constraint: starters_versions_pkey, update_columns: updatedAt }) {
         id
       }
     }`;
