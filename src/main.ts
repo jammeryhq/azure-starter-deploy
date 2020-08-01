@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import fs from 'fs'
 import got from 'got'
+import pMap from 'p-map'
 import { BlobServiceClient } from '@azure/storage-blob'
 import { read } from 'readdir'
 
@@ -23,14 +24,14 @@ async function run (): Promise<void> {
     const { name, version }: { name: string, version: string } = JSON.parse(fs.readFileSync('package.json', 'utf8'))
     if (!name || !version) throw new Error('Missing either name or version.')
 
-    const files = await read('.')
+    const starterFiles = await read('.')
 
     const uploadPath = (path: string): string => `${name}/${version}/${path}`
 
-    for await (const path of files) {
+    await pMap(starterFiles, async path => {
       const blockBlobClient = containerClient.getBlockBlobClient(uploadPath(path))
       await blockBlobClient.uploadStream(fs.createReadStream(path))
-    }
+    })
 
     // Now update Hasura to set the latest versions
     const query = `mutation InsertStartersVersions ($payload: starters_versions_insert_input!) {

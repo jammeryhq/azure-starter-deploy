@@ -23,6 +23,7 @@
     "@actions/core": "^1.2.4",
     "@azure/storage-blob": "^12.2.0-preview.1",
     "got": "^11.5.1",
+    "p-map": "^4.0.0",
     "readdir": "^1.0.2"
   },
   "devDependencies": {
