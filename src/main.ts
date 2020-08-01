@@ -5,22 +5,22 @@ import { BlobServiceClient } from '@azure/storage-blob'
 import { read } from 'readdir'
 
 async function run (): Promise<void> {
-  const AZURE_STORAGE_CONNECTION_STRING = core.getInput('connection-string')
-  const AZURE_STORAGE_CONTAINER_NAME = core.getInput('container-name')
-  const GRAPHQL_API_ENDPOINT = core.getInput('graphql-endpoint')
-  const GRAPHQL_API_SECRET = core.getInput('graphql-secret')
-
-  const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING)
-  const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME)
-
-  const graphql = got.extend({
-    prefixUrl: GRAPHQL_API_ENDPOINT,
-    headers: { 'x-hasura-admin-secret': GRAPHQL_API_SECRET },
-    resolveBodyOnly: true,
-    responseType: 'json'
-  })
-
   try {
+    const AZURE_STORAGE_CONNECTION_STRING = core.getInput('connection-string')
+    const AZURE_STORAGE_CONTAINER_NAME = core.getInput('container-name')
+    const GRAPHQL_API_ENDPOINT = core.getInput('graphql-endpoint')
+    const GRAPHQL_API_SECRET = core.getInput('graphql-secret')
+
+    const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING)
+    const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME)
+
+    const graphql = got.extend({
+      prefixUrl: GRAPHQL_API_ENDPOINT,
+      headers: { 'x-hasura-admin-secret': GRAPHQL_API_SECRET },
+      resolveBodyOnly: true,
+      responseType: 'json'
+    })
+
     const { name, version }: { name: string, version: string } = JSON.parse(fs.readFileSync('package.json', 'utf8'))
     if (!name || !version) throw new Error('Missing either name or version.')
 
