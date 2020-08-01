@@ -3989,7 +3989,7 @@ function run() {
             const jammeryFiles = yield readdir_1.read('.jammeryhq');
             yield p_map_1.default(jammeryFiles, (path) => __awaiter(this, void 0, void 0, function* () {
                 const blockBlobClient = containerClient.getBlockBlobClient(`${name}/${version}/jam/${path}`);
-                yield blockBlobClient.uploadStream(fs_1.default.createReadStream(path));
+                yield blockBlobClient.uploadStream(fs_1.default.createReadStream(`.jammeryhq/${path}`));
             }));
             // Now update Hasura to set the latest versions
             const query = `mutation InsertStartersVersions ($payload: starters_versions_insert_input!) {

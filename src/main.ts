@@ -33,7 +33,7 @@ async function run (): Promise<void> {
     const jammeryFiles = await read('.jammeryhq')
     await pMap(jammeryFiles, async path => {
       const blockBlobClient = containerClient.getBlockBlobClient(`${name}/${version}/jam/${path}`)
-      await blockBlobClient.uploadStream(fs.createReadStream(path))
+      await blockBlobClient.uploadStream(fs.createReadStream(`.jammeryhq/${path}`))
     })
 
     // Now update Hasura to set the latest versions
