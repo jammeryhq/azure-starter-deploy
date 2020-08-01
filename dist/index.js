@@ -3981,7 +3981,6 @@ function run() {
             const blobServiceClient = storage_blob_1.BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
             const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME);
             const graphql = got_1.default.extend({
-                prefixUrl: GRAPHQL_API_ENDPOINT,
                 headers: { 'x-hasura-admin-secret': GRAPHQL_API_SECRET },
                 resolveBodyOnly: true,
                 responseType: 'json'
@@ -4012,7 +4011,7 @@ function run() {
       }
     }`;
             const variables = { payload: { name, version } };
-            yield graphql.post('v1/graphql', { json: { query, variables } });
+            yield graphql.post(GRAPHQL_API_ENDPOINT, { json: { query, variables } });
         }
         catch (error) {
             core.setFailed(error.message);

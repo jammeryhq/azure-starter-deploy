@@ -15,7 +15,6 @@ async function run (): Promise<void> {
     const containerClient = blobServiceClient.getContainerClient(AZURE_STORAGE_CONTAINER_NAME)
 
     const graphql = got.extend({
-      prefixUrl: GRAPHQL_API_ENDPOINT,
       headers: { 'x-hasura-admin-secret': GRAPHQL_API_SECRET },
       resolveBodyOnly: true,
       responseType: 'json'
@@ -40,7 +39,7 @@ async function run (): Promise<void> {
       }
     }`
     const variables = { payload: { name, version } }
-    await graphql.post('v1/graphql', { json: { query, variables } })
+    await graphql.post(GRAPHQL_API_ENDPOINT, { json: { query, variables } })
   } catch (error) {
     core.setFailed(error.message)
   }
