@@ -24,11 +24,15 @@ async function run (): Promise<void> {
     const { name, version }: { name: string, version: string } = JSON.parse(fs.readFileSync('package.json', 'utf8'))
     if (!name || !version) throw new Error('Missing either name or version.')
 
-    const uploadPath = (path: string): string => `${name}/${version}/${path}`
-
     const starterFiles = await read('.')
     await pMap(starterFiles, async path => {
-      const blockBlobClient = containerClient.getBlockBlobClient(uploadPath(path))
+      const blockBlobClient = containerClient.getBlockBlobClient(`${name}/${version}/starter/${path}`)
+      await blockBlobClient.uploadStream(fs.createReadStream(path))
+    })
+
+    const jammeryFiles = await read('.jammeryhq')
+    await pMap(jammeryFiles, async path => {
+      const blockBlobClient = containerClient.getBlockBlobClient(`${name}/${version}/jam/${path}`)
       await blockBlobClient.uploadStream(fs.createReadStream(path))
     })
 

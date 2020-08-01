@@ -3954,13 +3954,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -3968,10 +3961,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const fs_1 = __importDefault(__webpack_require__(747));
 const got_1 = __importDefault(__webpack_require__(77));
+const p_map_1 = __importDefault(__webpack_require__(521));
 const storage_blob_1 = __webpack_require__(373);
 const readdir_1 = __webpack_require__(633);
 function run() {
-    var e_1, _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const AZURE_STORAGE_CONNECTION_STRING = core.getInput('connection-string');
@@ -3988,22 +3981,16 @@ function run() {
             const { name, version } = JSON.parse(fs_1.default.readFileSync('package.json', 'utf8'));
             if (!name || !version)
                 throw new Error('Missing either name or version.');
-            const files = yield readdir_1.read('.');
-            const uploadPath = (path) => `${name}/${version}/${path}`;
-            try {
-                for (var files_1 = __asyncValues(files), files_1_1; files_1_1 = yield files_1.next(), !files_1_1.done;) {
-                    const path = files_1_1.value;
-                    const blockBlobClient = containerClient.getBlockBlobClient(uploadPath(path));
-                    yield blockBlobClient.uploadStream(fs_1.default.createReadStream(path));
-                }
-            }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (files_1_1 && !files_1_1.done && (_a = files_1.return)) yield _a.call(files_1);
-                }
-                finally { if (e_1) throw e_1.error; }
-            }
+            const starterFiles = yield readdir_1.read('.');
+            yield p_map_1.default(starterFiles, (path) => __awaiter(this, void 0, void 0, function* () {
+                const blockBlobClient = containerClient.getBlockBlobClient(`${name}/${version}/starter/${path}`);
+                yield blockBlobClient.uploadStream(fs_1.default.createReadStream(path));
+            }));
+            const jammeryFiles = yield readdir_1.read('.jammeryhq');
+            yield p_map_1.default(jammeryFiles, (path) => __awaiter(this, void 0, void 0, function* () {
+                const blockBlobClient = containerClient.getBlockBlobClient(`${name}/${version}/jam/${path}`);
+                yield blockBlobClient.uploadStream(fs_1.default.createReadStream(path));
+            }));
             // Now update Hasura to set the latest versions
             const query = `mutation InsertStartersVersions ($payload: starters_versions_insert_input!) {
       insertStartersVersion (object: $payload, on_conflict: { constraint: starters_versions_pkey, update_columns: updatedAt }) {
@@ -4025,7 +4012,53 @@ run();
 /***/ }),
 /* 199 */,
 /* 200 */,
-/* 201 */,
+/* 201 */
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+"use strict";
+
+const os = __webpack_require__(87);
+
+const extractPathRegex = /\s+at.*(?:\(|\s)(.*)\)?/;
+const pathRegex = /^(?:(?:(?:node|(?:internal\/[\w/]*|.*node_modules\/(?:babel-polyfill|pirates)\/.*)?\w+)\.js:\d+:\d+)|native)/;
+const homeDir = typeof os.homedir === 'undefined' ? '' : os.homedir();
+
+module.exports = (stack, options) => {
+	options = Object.assign({pretty: false}, options);
+
+	return stack.replace(/\\/g, '/')
+		.split('\n')
+		.filter(line => {
+			const pathMatches = line.match(extractPathRegex);
+			if (pathMatches === null || !pathMatches[1]) {
+				return true;
+			}
+
+			const match = pathMatches[1];
+
+			// Electron
+			if (
+				match.includes('.app/Contents/Resources/electron.asar') ||
+				match.includes('.app/Contents/Resources/default_app.asar')
+			) {
+				return false;
+			}
+
+			return !pathRegex.test(match);
+		})
+		.filter(line => line.trim() !== '')
+		.map(line => {
+			if (options.pretty) {
+				return line.replace(extractPathRegex, (m, p1) => m.replace(p1, p1.replace(homeDir, '~')));
+			}
+
+			return line;
+		})
+		.join('\n');
+};
+
+
+/***/ }),
 /* 202 */,
 /* 203 */,
 /* 204 */,
@@ -4558,7 +4591,48 @@ module.exports = {
 /* 254 */,
 /* 255 */,
 /* 256 */,
-/* 257 */,
+/* 257 */
+/***/ (function(module) {
+
+"use strict";
+
+
+module.exports = (string, count = 1, options) => {
+	options = {
+		indent: ' ',
+		includeEmptyLines: false,
+		...options
+	};
+
+	if (typeof string !== 'string') {
+		throw new TypeError(
+			`Expected \`input\` to be a \`string\`, got \`${typeof string}\``
+		);
+	}
+
+	if (typeof count !== 'number') {
+		throw new TypeError(
+			`Expected \`count\` to be a \`number\`, got \`${typeof count}\``
+		);
+	}
+
+	if (typeof options.indent !== 'string') {
+		throw new TypeError(
+			`Expected \`options.indent\` to be a \`string\`, got \`${typeof options.indent}\``
+		);
+	}
+
+	if (count === 0) {
+		return string;
+	}
+
+	const regex = options.includeEmptyLines ? /^/gm : /^(?!\s*$)/gm;
+
+	return string.replace(regex, options.indent.repeat(count));
+};
+
+
+/***/ }),
 /* 258 */,
 /* 259 */,
 /* 260 */,
@@ -5326,7 +5400,60 @@ exports.setTracer = setTracer;
 /***/ }),
 /* 271 */,
 /* 272 */,
-/* 273 */,
+/* 273 */
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+"use strict";
+
+const indentString = __webpack_require__(257);
+const cleanStack = __webpack_require__(201);
+
+const cleanInternalStack = stack => stack.replace(/\s+at .*aggregate-error\/index.js:\d+:\d+\)?/g, '');
+
+class AggregateError extends Error {
+	constructor(errors) {
+		if (!Array.isArray(errors)) {
+			throw new TypeError(`Expected input to be an Array, got ${typeof errors}`);
+		}
+
+		errors = [...errors].map(error => {
+			if (error instanceof Error) {
+				return error;
+			}
+
+			if (error !== null && typeof error === 'object') {
+				// Handle plain error objects with message property and/or possibly other metadata
+				return Object.assign(new Error(error.message), error);
+			}
+
+			return new Error(error);
+		});
+
+		let message = errors
+			.map(error => {
+				// The `stack` property is not standardized, so we can't assume it exists
+				return typeof error.stack === 'string' ? cleanInternalStack(cleanStack(error.stack)) : String(error);
+			})
+			.join('\n');
+		message = '\n' + indentString(message, 4);
+		super(message);
+
+		this.name = 'AggregateError';
+
+		Object.defineProperty(this, '_errors', {value: errors});
+	}
+
+	* [Symbol.iterator]() {
+		for (const error of this._errors) {
+			yield error;
+		}
+	}
+}
+
+module.exports = AggregateError;
+
+
+/***/ }),
 /* 274 */,
 /* 275 */,
 /* 276 */,
@@ -35505,7 +35632,94 @@ exports.getPublicSuffix = getPublicSuffix;
 
 /***/ }),
 /* 520 */,
-/* 521 */,
+/* 521 */
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+"use strict";
+
+const AggregateError = __webpack_require__(273);
+
+module.exports = async (
+	iterable,
+	mapper,
+	{
+		concurrency = Infinity,
+		stopOnError = true
+	} = {}
+) => {
+	return new Promise((resolve, reject) => {
+		if (typeof mapper !== 'function') {
+			throw new TypeError('Mapper function is required');
+		}
+
+		if (!((Number.isSafeInteger(concurrency) || concurrency === Infinity) && concurrency >= 1)) {
+			throw new TypeError(`Expected \`concurrency\` to be an integer from 1 and up or \`Infinity\`, got \`${concurrency}\` (${typeof concurrency})`);
+		}
+
+		const result = [];
+		const errors = [];
+		const iterator = iterable[Symbol.iterator]();
+		let isRejected = false;
+		let isIterableDone = false;
+		let resolvingCount = 0;
+		let currentIndex = 0;
+
+		const next = () => {
+			if (isRejected) {
+				return;
+			}
+
+			const nextItem = iterator.next();
+			const index = currentIndex;
+			currentIndex++;
+
+			if (nextItem.done) {
+				isIterableDone = true;
+
+				if (resolvingCount === 0) {
+					if (!stopOnError && errors.length !== 0) {
+						reject(new AggregateError(errors));
+					} else {
+						resolve(result);
+					}
+				}
+
+				return;
+			}
+
+			resolvingCount++;
+
+			(async () => {
+				try {
+					const element = await nextItem.value;
+					result[index] = await mapper(element, index);
+					resolvingCount--;
+					next();
+				} catch (error) {
+					if (stopOnError) {
+						isRejected = true;
+						reject(error);
+					} else {
+						errors.push(error);
+						resolvingCount--;
+						next();
+					}
+				}
+			})();
+		};
+
+		for (let i = 0; i < concurrency; i++) {
+			next();
+
+			if (isIterableDone) {
+				break;
+			}
+		}
+	});
+};
+
+
+/***/ }),
 /* 522 */,
 /* 523 */,
 /* 524 */
