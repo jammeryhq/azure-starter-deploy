@@ -21,7 +21,7 @@ async function run (): Promise<void> {
       responseType: 'json'
     })
 
-    const { name, version }: { name: string, version: string } = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+    const { name, version }: { name: string, version: string } = JSON.parse(fs.readFileSync('.jammeryhq/config.json', 'utf8'))
     if (!name || !version) throw new Error('Missing either name or version.')
 
     const starterFiles = await read('.')
