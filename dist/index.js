@@ -3978,7 +3978,7 @@ function run() {
                 resolveBodyOnly: true,
                 responseType: 'json'
             });
-            const { name, version } = JSON.parse(fs_1.default.readFileSync('package.json', 'utf8'));
+            const { name, version } = JSON.parse(fs_1.default.readFileSync('.jammeryhq/config.json', 'utf8'));
             if (!name || !version)
                 throw new Error('Missing either name or version.');
             const starterFiles = yield readdir_1.read('.');
