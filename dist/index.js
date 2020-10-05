@@ -3998,7 +3998,9 @@ function run() {
       }
     }`;
             const variables = { payload: { name, version } };
-            yield graphql.post(GRAPHQL_API_ENDPOINT, { json: { query, variables } });
+            const { errors } = yield graphql.post(GRAPHQL_API_ENDPOINT, { json: { query, variables }, resolveBodyOnly: true, responseType: 'json' });
+            if (errors)
+                throw new Error(errors[0].message);
         }
         catch (error) {
             core.setFailed(error.message);
