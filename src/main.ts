@@ -43,7 +43,8 @@ async function run (): Promise<void> {
       }
     }`
     const variables = { payload: { name, version } }
-    await graphql.post(GRAPHQL_API_ENDPOINT, { json: { query, variables } })
+    const { errors } = await graphql.post(GRAPHQL_API_ENDPOINT, { json: { query, variables }, resolveBodyOnly: true, responseType: 'json' })
+    if (errors) throw new Error(errors[ 0 ].message)
   } catch (error) {
     core.setFailed(error.message)
   }
