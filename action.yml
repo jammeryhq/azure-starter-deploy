@@ -8,11 +8,11 @@ inputs:
   container-name:
     description: 'Azure Container Name'
     default: ''
-  graphql-endpoint:
-    description: 'Hasura API Endpoint'
+  api-endpoint:
+    description: 'API Endpoint'
     default: ''
-  graphql-secret:
-    description: 'Hasura Secret'
+  api-secret:
+    description: 'API Secret'
     default: ''
 runs:
   using: 'node12'
