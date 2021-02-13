@@ -27329,7 +27329,7 @@ async function run() {
             await blockBlobClient.uploadStream(fs_1.default.createReadStream(`.jammeryhq/${path}`));
         });
         // Now update the DB version
-        const response = await node_fetch_1.default(`${API_ENDPOINT}/v1/starters/version`, {
+        const response = await node_fetch_1.default(`${API_ENDPOINT}/v1/starters/versions`, {
             method: 'POST',
             headers: { 'x-api-authorization': API_SECRET },
             body: JSON.stringify({ name, version })

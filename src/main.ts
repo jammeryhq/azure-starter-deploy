@@ -31,7 +31,7 @@ async function run (): Promise<void> {
     })
 
     // Now update the DB version
-    const response = await fetch(`${API_ENDPOINT}/v1/starters/version`, {
+    const response = await fetch(`${API_ENDPOINT}/v1/starters/versions`, {
       method: 'POST',
       headers: { 'x-api-authorization': API_SECRET },
       body: JSON.stringify({ name, version })
