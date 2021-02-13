@@ -27331,7 +27331,10 @@ async function run() {
         // Now update the DB version
         const response = await node_fetch_1.default(`${API_ENDPOINT}/v1/starters/versions`, {
             method: 'POST',
-            headers: { 'x-api-authorization': API_SECRET },
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-authorization': API_SECRET
+            },
             body: JSON.stringify({ name, version })
         });
         if (!response.ok)
